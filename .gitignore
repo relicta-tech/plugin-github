@@ -1,0 +1,25 @@
+# Binaries
+github
+github_*
+*.exe
+
+# Archives
+*.tar.gz
+*.zip
+
+# Test coverage
+coverage.out
+coverage.html
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies (go mod handles these)
+vendor/
