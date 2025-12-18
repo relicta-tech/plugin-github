@@ -215,7 +215,7 @@ func (p *GitHubPlugin) uploadAsset(ctx context.Context, client *github.Client, o
 	if err != nil {
 		return nil, fmt.Errorf("failed to open asset %s: %w", assetPath, err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// Get file info for size
 	fileInfo, err := file.Stat()

@@ -156,21 +156,21 @@ func TestValidate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Clean environment before each test
-			os.Unsetenv("GITHUB_TOKEN")
-			os.Unsetenv("GH_TOKEN")
+			_ = os.Unsetenv("GITHUB_TOKEN")
+			_ = os.Unsetenv("GH_TOKEN")
 
 			// Set environment variables for this test
 			if tt.envToken != "" {
-				os.Setenv("GITHUB_TOKEN", tt.envToken)
+				_ = os.Setenv("GITHUB_TOKEN", tt.envToken)
 			}
 			if tt.envGHToken != "" {
-				os.Setenv("GH_TOKEN", tt.envGHToken)
+				_ = os.Setenv("GH_TOKEN", tt.envGHToken)
 			}
 
 			// Clean up after test
 			defer func() {
-				os.Unsetenv("GITHUB_TOKEN")
-				os.Unsetenv("GH_TOKEN")
+				_ = os.Unsetenv("GITHUB_TOKEN")
+				_ = os.Unsetenv("GH_TOKEN")
 			}()
 
 			p := &GitHubPlugin{}
@@ -324,16 +324,16 @@ func TestParseConfig(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Clean environment before each test
-			os.Unsetenv("GITHUB_TOKEN")
-			os.Unsetenv("GH_TOKEN")
+			_ = os.Unsetenv("GITHUB_TOKEN")
+			_ = os.Unsetenv("GH_TOKEN")
 
 			if tt.envToken != "" {
-				os.Setenv("GITHUB_TOKEN", tt.envToken)
+				_ = os.Setenv("GITHUB_TOKEN", tt.envToken)
 			}
 
 			defer func() {
-				os.Unsetenv("GITHUB_TOKEN")
-				os.Unsetenv("GH_TOKEN")
+				_ = os.Unsetenv("GITHUB_TOKEN")
+				_ = os.Unsetenv("GH_TOKEN")
 			}()
 
 			p := &GitHubPlugin{}
@@ -576,11 +576,11 @@ func TestExecute(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Clean environment
-			os.Unsetenv("GITHUB_TOKEN")
-			os.Unsetenv("GH_TOKEN")
+			_ = os.Unsetenv("GITHUB_TOKEN")
+			_ = os.Unsetenv("GH_TOKEN")
 			defer func() {
-				os.Unsetenv("GITHUB_TOKEN")
-				os.Unsetenv("GH_TOKEN")
+				_ = os.Unsetenv("GITHUB_TOKEN")
+				_ = os.Unsetenv("GH_TOKEN")
 			}()
 
 			p := &GitHubPlugin{}
@@ -618,11 +618,11 @@ func TestExecute(t *testing.T) {
 // TestExecuteNoToken tests that execution fails gracefully without a token.
 func TestExecuteNoToken(t *testing.T) {
 	// Clear any environment tokens
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -705,19 +705,19 @@ func TestGetClient(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Clean environment before each test
-			os.Unsetenv("GITHUB_TOKEN")
-			os.Unsetenv("GH_TOKEN")
+			_ = os.Unsetenv("GITHUB_TOKEN")
+			_ = os.Unsetenv("GH_TOKEN")
 
 			if tt.envToken != "" {
-				os.Setenv("GITHUB_TOKEN", tt.envToken)
+				_ = os.Setenv("GITHUB_TOKEN", tt.envToken)
 			}
 			if tt.envGHToken != "" {
-				os.Setenv("GH_TOKEN", tt.envGHToken)
+				_ = os.Setenv("GH_TOKEN", tt.envGHToken)
 			}
 
 			defer func() {
-				os.Unsetenv("GITHUB_TOKEN")
-				os.Unsetenv("GH_TOKEN")
+				_ = os.Unsetenv("GITHUB_TOKEN")
+				_ = os.Unsetenv("GH_TOKEN")
 			}()
 
 			p := &GitHubPlugin{}
@@ -741,11 +741,11 @@ func TestGetClient(t *testing.T) {
 
 // TestExecuteWithConfigOwnerRepoPrecedence tests that config owner/repo takes precedence.
 func TestExecuteWithConfigOwnerRepoPrecedence(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -788,13 +788,13 @@ func TestExecuteWithConfigOwnerRepoPrecedence(t *testing.T) {
 // TestParseConfigWithGHToken tests that GH_TOKEN is used as fallback.
 func TestParseConfigWithGHToken(t *testing.T) {
 	// Clean environment
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 
-	os.Setenv("GH_TOKEN", "ghp_gh_fallback")
+	_ = os.Setenv("GH_TOKEN", "ghp_gh_fallback")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -807,14 +807,14 @@ func TestParseConfigWithGHToken(t *testing.T) {
 
 // TestParseConfigGITHUB_TOKENTakesPrecedence tests GITHUB_TOKEN over GH_TOKEN.
 func TestParseConfigGITHUB_TOKENTakesPrecedence(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 
-	os.Setenv("GITHUB_TOKEN", "ghp_github_token")
-	os.Setenv("GH_TOKEN", "ghp_gh_token")
+	_ = os.Setenv("GITHUB_TOKEN", "ghp_github_token")
+	_ = os.Setenv("GH_TOKEN", "ghp_gh_token")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -868,11 +868,11 @@ func TestConfigStruct(t *testing.T) {
 
 // TestValidateWithNilConfig ensures nil config is handled gracefully.
 func TestValidateWithNilConfig(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -889,11 +889,11 @@ func TestValidateWithNilConfig(t *testing.T) {
 
 // TestExecuteContextCancellation tests that context cancellation is respected.
 func TestExecuteContextCancellation(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -930,11 +930,11 @@ func TestExecuteContextCancellation(t *testing.T) {
 
 // TestExecuteAllHooks tests that all registered hooks are handled correctly.
 func TestExecuteAllHooks(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -974,11 +974,11 @@ func TestExecuteAllHooks(t *testing.T) {
 
 // TestParseConfigEmptyStringValues tests that empty string values are handled.
 func TestParseConfigEmptyStringValues(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1008,13 +1008,13 @@ func TestParseConfigEmptyStringValues(t *testing.T) {
 
 // TestValidateWithEnvTokenOnly tests validation with only environment token.
 func TestValidateWithEnvTokenOnly(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 
-	os.Setenv("GITHUB_TOKEN", "ghp_env_token")
+	_ = os.Setenv("GITHUB_TOKEN", "ghp_env_token")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1031,11 +1031,11 @@ func TestValidateWithEnvTokenOnly(t *testing.T) {
 
 // TestExecuteWithEmptyReleaseContext tests execution with minimal release context.
 func TestExecuteWithEmptyReleaseContext(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1068,11 +1068,11 @@ func TestExecuteWithEmptyReleaseContext(t *testing.T) {
 
 // TestCreateReleaseOutputsContainExpectedKeys tests that dry run outputs contain all expected keys.
 func TestCreateReleaseOutputsContainExpectedKeys(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1126,11 +1126,11 @@ func TestHookConstants(t *testing.T) {
 
 // TestParseConfigWithMixedTypes tests parsing config with various Go types.
 func TestParseConfigWithMixedTypes(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1170,11 +1170,11 @@ func TestParseConfigWithMixedTypes(t *testing.T) {
 
 // TestValidateErrorField tests that validation errors include the correct field name.
 func TestValidateErrorField(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1208,11 +1208,11 @@ func TestValidateErrorField(t *testing.T) {
 
 // TestCreateReleaseWithAllOptions tests createRelease with all configuration options in dry run.
 func TestCreateReleaseWithAllOptions(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1259,11 +1259,11 @@ func TestCreateReleaseWithAllOptions(t *testing.T) {
 
 // TestCreateReleaseUsesFallbackBody tests that Changelog is used when ReleaseNotes is empty.
 func TestCreateReleaseUsesFallbackBody(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1297,11 +1297,11 @@ func TestCreateReleaseUsesFallbackBody(t *testing.T) {
 
 // TestExecuteWithPartialOwnerRepo tests execution with only owner or only repo.
 func TestExecuteWithPartialOwnerRepo(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	tests := []struct {
@@ -1388,11 +1388,11 @@ func TestExecuteWithPartialOwnerRepo(t *testing.T) {
 
 // TestParseConfigWithNilAssets tests parsing config when assets is nil.
 func TestParseConfigWithNilAssets(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1411,11 +1411,11 @@ func TestParseConfigWithNilAssets(t *testing.T) {
 
 // TestParseConfigWithEmptyAssets tests parsing config when assets is an empty slice.
 func TestParseConfigWithEmptyAssets(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1434,11 +1434,11 @@ func TestParseConfigWithEmptyAssets(t *testing.T) {
 
 // TestMultipleValidationCalls tests that validation can be called multiple times.
 func TestMultipleValidationCalls(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1453,7 +1453,7 @@ func TestMultipleValidationCalls(t *testing.T) {
 	}
 
 	// Set token
-	os.Setenv("GITHUB_TOKEN", "ghp_test")
+	_ = os.Setenv("GITHUB_TOKEN", "ghp_test")
 
 	// Second call - should pass
 	resp2, err := p.Validate(context.Background(), map[string]any{})
@@ -1500,11 +1500,11 @@ func TestGetInfoReturnsConsistentData(t *testing.T) {
 
 // TestExecuteResponseStructure tests that ExecuteResponse has expected structure.
 func TestExecuteResponseStructure(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1597,7 +1597,7 @@ func TestUploadAssetDirectory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	// Try to upload a directory
 	_, err = p.uploadAsset(ctx, nil, "owner", "repo", 123, tmpDir)
@@ -1621,7 +1621,7 @@ func TestUploadAssetSymlink(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp dir: %v", err)
 	}
-	defer os.RemoveAll(tmpDir)
+	defer func() { _ = os.RemoveAll(tmpDir) }()
 
 	realFile := tmpDir + "/realfile.txt"
 	if err := os.WriteFile(realFile, []byte("test content"), 0644); err != nil {
@@ -1652,13 +1652,13 @@ func TestUploadAssetWithValidFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	content := []byte("test asset content")
 	if _, err := tmpFile.Write(content); err != nil {
 		t.Fatalf("failed to write to temp file: %v", err)
 	}
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	// Create a mock HTTP server
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1671,7 +1671,7 @@ func TestUploadAssetWithValidFile(t *testing.T) {
 				"size":                 len(content),
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
+			_ = json.NewEncoder(w).Encode(response)
 			return
 		}
 		http.NotFound(w, r)
@@ -1708,11 +1708,11 @@ func TestUploadAssetWithValidFile(t *testing.T) {
 
 // TestCreateReleaseWithMockServer tests createRelease with a mock GitHub API.
 func TestCreateReleaseWithMockServer(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	// Create a mock HTTP server
@@ -1727,7 +1727,7 @@ func TestCreateReleaseWithMockServer(t *testing.T) {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusCreated)
-			json.NewEncoder(w).Encode(response)
+			_ = json.NewEncoder(w).Encode(response)
 			return
 		}
 		http.NotFound(w, r)
@@ -1762,17 +1762,17 @@ func TestCreateReleaseWithMockServer(t *testing.T) {
 
 // TestCreateReleaseAPIError tests createRelease when GitHub API returns an error.
 func TestCreateReleaseAPIError(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	// Create a mock HTTP server that returns an error
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`{"message": "Bad credentials"}`))
+		_, _ = w.Write([]byte(`{"message": "Bad credentials"}`))
 	}))
 	defer server.Close()
 
@@ -1817,11 +1817,11 @@ func TestCreateReleaseAPIError(t *testing.T) {
 
 // TestCreateReleaseWithAssets tests createRelease with assets in dry run.
 func TestCreateReleaseWithAssets(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1855,11 +1855,11 @@ func TestCreateReleaseWithAssets(t *testing.T) {
 
 // TestCreateReleaseNoToken tests createRelease returns error without token.
 func TestCreateReleaseNoToken(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1892,11 +1892,11 @@ func TestCreateReleaseNoToken(t *testing.T) {
 
 // TestCreateReleaseEmptyOwnerRepo tests createRelease with empty owner/repo.
 func TestCreateReleaseEmptyOwnerRepo(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -1936,17 +1936,17 @@ func TestUploadAssetAPIFailure(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create temp file: %v", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	defer func() { _ = os.Remove(tmpFile.Name()) }()
 
 	if _, err := tmpFile.Write([]byte("test content")); err != nil {
 		t.Fatalf("failed to write to temp file: %v", err)
 	}
-	tmpFile.Close()
+	_ = tmpFile.Close()
 
 	// Create a mock HTTP server that returns an error
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"message": "Internal Server Error"}`))
+		_, _ = w.Write([]byte(`{"message": "Internal Server Error"}`))
 	}))
 	defer server.Close()
 
@@ -1972,11 +1972,11 @@ func TestUploadAssetAPIFailure(t *testing.T) {
 
 // TestCreateReleaseSuccessWithMockAPI tests the full success path with mocked API.
 func TestCreateReleaseSuccessWithMockAPI(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	// Create a mock HTTP server
@@ -1990,7 +1990,7 @@ func TestCreateReleaseSuccessWithMockAPI(t *testing.T) {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusCreated)
-			json.NewEncoder(w).Encode(response)
+			_ = json.NewEncoder(w).Encode(response)
 			return
 		}
 		http.NotFound(w, r)
@@ -2035,11 +2035,11 @@ func TestCreateReleaseSuccessWithMockAPI(t *testing.T) {
 
 // TestCreateReleaseBodyFallback tests that Changelog is used when ReleaseNotes is empty.
 func TestCreateReleaseBodyFallback(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -2070,11 +2070,11 @@ func TestCreateReleaseBodyFallback(t *testing.T) {
 
 // TestCreateReleaseWithDiscussionCategory tests release creation with discussion category.
 func TestCreateReleaseWithDiscussionCategory(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -2104,11 +2104,11 @@ func TestCreateReleaseWithDiscussionCategory(t *testing.T) {
 
 // TestOwnerRepoFromContext tests that owner/repo can come from release context.
 func TestOwnerRepoFromContext(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
@@ -2147,11 +2147,11 @@ func TestOwnerRepoFromContext(t *testing.T) {
 
 // TestConfigOwnerTakesPrecedence tests that config owner takes precedence over context.
 func TestConfigOwnerTakesPrecedence(t *testing.T) {
-	os.Unsetenv("GITHUB_TOKEN")
-	os.Unsetenv("GH_TOKEN")
+	_ = os.Unsetenv("GITHUB_TOKEN")
+	_ = os.Unsetenv("GH_TOKEN")
 	defer func() {
-		os.Unsetenv("GITHUB_TOKEN")
-		os.Unsetenv("GH_TOKEN")
+		_ = os.Unsetenv("GITHUB_TOKEN")
+		_ = os.Unsetenv("GH_TOKEN")
 	}()
 
 	p := &GitHubPlugin{}
