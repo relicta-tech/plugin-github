@@ -1,11 +1,11 @@
 module github.com/relicta-tech/plugin-github
 
-go 1.22.7
+go 1.24.0
 
 require (
 	github.com/google/go-github/v60 v60.0.0
 	github.com/relicta-tech/relicta-plugin-sdk v1.0.0
-	golang.org/x/oauth2 v0.24.0
+	golang.org/x/oauth2 v0.34.0
 )
 
 require (
