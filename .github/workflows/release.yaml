@@ -110,8 +110,24 @@ jobs:
             release/${{ env.PLUGIN_NAME }}_windows_x86_64.zip
 
       - name: Release with Relicta
-        uses: relicta-tech/relicta-action@v1
+        uses: relicta-tech/relicta-action@v2
         with:
+          version: latest
           github-token: ${{ secrets.GITHUB_TOKEN }}
           command: publish
           plugins: github
+          config-content: |
+            versioning:
+              strategy: conventional
+              tag_prefix: v
+            plugins:
+              - name: github
+                enabled: true
+                config:
+                  draft: false
+                  prerelease: false
+                  generate_release_notes: true
+                  assets:
+                    - "release/*.tar.gz"
+                    - "release/*.zip"
+                    - "release/checksums.txt"
