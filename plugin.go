@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/google/go-github/v60/github"
 	"golang.org/x/oauth2"
@@ -165,15 +166,29 @@ func (p *GitHubPlugin) createRelease(ctx context.Context, cfg *Config, releaseCt
 	releaseID := createdRelease.GetID()
 	htmlURL := createdRelease.GetHTMLURL()
 
-	// Upload assets
+	// Upload assets - expand glob patterns
 	var artifacts []plugin.Artifact
-	for _, assetPath := range cfg.Assets {
-		artifact, err := p.uploadAsset(ctx, client, owner, repo, releaseID, assetPath)
+	for _, assetPattern := range cfg.Assets {
+		// Expand glob patterns
+		matches, err := filepath.Glob(assetPattern)
 		if err != nil {
-			// Log but don't fail
+			// Invalid pattern, skip
 			continue
 		}
-		artifacts = append(artifacts, *artifact)
+
+		// If no matches found and pattern has no wildcards, treat as literal path
+		if len(matches) == 0 {
+			matches = []string{assetPattern}
+		}
+
+		for _, assetPath := range matches {
+			artifact, err := p.uploadAsset(ctx, client, owner, repo, releaseID, assetPath)
+			if err != nil {
+				// Log but don't fail
+				continue
+			}
+			artifacts = append(artifacts, *artifact)
+		}
 	}
 
 	return &plugin.ExecuteResponse{

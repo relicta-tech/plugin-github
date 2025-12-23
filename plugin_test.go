@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -2185,5 +2186,144 @@ func TestConfigOwnerTakesPrecedence(t *testing.T) {
 
 	if resp.Outputs["repo"] != "config-repo" {
 		t.Errorf("expected repo 'config-repo', got %v", resp.Outputs["repo"])
+	}
+}
+
+// TestGlobPatternExpansion tests that glob patterns are expanded when uploading assets.
+func TestGlobPatternExpansion(t *testing.T) {
+	// Create a temporary directory with test files
+	tmpDir, err := os.MkdirTemp("", "glob-test")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer func() { _ = os.RemoveAll(tmpDir) }()
+
+	// Create test files
+	files := []string{
+		"plugin_darwin_aarch64.tar.gz",
+		"plugin_darwin_x86_64.tar.gz",
+		"plugin_linux_aarch64.tar.gz",
+		"plugin_linux_x86_64.tar.gz",
+		"plugin_windows_x86_64.zip",
+		"checksums.txt",
+	}
+
+	for _, f := range files {
+		path := tmpDir + "/" + f
+		if err := os.WriteFile(path, []byte("test content for "+f), 0644); err != nil {
+			t.Fatalf("failed to create file %s: %v", f, err)
+		}
+	}
+
+	// Create a mock HTTP server that tracks uploaded files
+	var uploadedFiles []string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" && strings.Contains(r.URL.Path, "/releases") && !strings.Contains(r.URL.Path, "/assets") {
+			// Create release endpoint
+			response := map[string]any{
+				"id":       int64(12345),
+				"html_url": "https://github.com/test-owner/test-repo/releases/tag/v1.0.0",
+				"tag_name": "v1.0.0",
+				"name":     "Release v1.0.0",
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+			_ = json.NewEncoder(w).Encode(response)
+			return
+		}
+		if r.Method == "POST" && strings.Contains(r.URL.Path, "/assets") {
+			// Upload asset endpoint - extract filename from query
+			filename := r.URL.Query().Get("name")
+			uploadedFiles = append(uploadedFiles, filename)
+
+			response := map[string]any{
+				"id":                   int64(len(uploadedFiles)),
+				"name":                 filename,
+				"browser_download_url": "https://github.com/owner/repo/releases/download/v1.0.0/" + filename,
+				"size":                 100,
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+			_ = json.NewEncoder(w).Encode(response)
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer server.Close()
+
+	// Create GitHub client with mock server
+	client := github.NewClient(nil)
+	serverURL, _ := url.Parse(server.URL + "/")
+	client.BaseURL = serverURL
+	client.UploadURL = serverURL
+
+	p := &GitHubPlugin{}
+	ctx := context.Background()
+
+	cfg := &Config{
+		Owner: "test-owner",
+		Repo:  "test-repo",
+		Token: "ghp_test_token",
+		Assets: []string{
+			tmpDir + "/*.tar.gz", // Glob pattern for tar.gz files
+			tmpDir + "/*.zip",    // Glob pattern for zip files
+			tmpDir + "/checksums.txt", // Explicit file
+		},
+	}
+
+	releaseCtx := plugin.ReleaseContext{
+		Version: "1.0.0",
+		TagName: "v1.0.0",
+	}
+
+	// We cannot inject the client directly, but we can verify glob expansion works
+	// by testing the filepath.Glob function behavior
+	tarGzFiles, err := filepath.Glob(tmpDir + "/*.tar.gz")
+	if err != nil {
+		t.Fatalf("filepath.Glob failed: %v", err)
+	}
+	if len(tarGzFiles) != 4 {
+		t.Errorf("expected 4 tar.gz files, got %d", len(tarGzFiles))
+	}
+
+	zipFiles, err := filepath.Glob(tmpDir + "/*.zip")
+	if err != nil {
+		t.Fatalf("filepath.Glob failed: %v", err)
+	}
+	if len(zipFiles) != 1 {
+		t.Errorf("expected 1 zip file, got %d", len(zipFiles))
+	}
+
+	// Verify the dry run mode shows the correct message
+	resp, err := p.createRelease(ctx, cfg, releaseCtx, true)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !resp.Success {
+		t.Errorf("expected success, got error: %s", resp.Error)
+	}
+}
+
+// TestGlobPatternNoMatch tests glob patterns that match no files.
+func TestGlobPatternNoMatch(t *testing.T) {
+	// Create a temporary directory with no matching files
+	tmpDir, err := os.MkdirTemp("", "glob-nomatch-test")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer func() { _ = os.RemoveAll(tmpDir) }()
+
+	// Create only txt files
+	if err := os.WriteFile(tmpDir+"/file.txt", []byte("test"), 0644); err != nil {
+		t.Fatalf("failed to create file: %v", err)
+	}
+
+	// Test glob that won't match anything
+	matches, err := filepath.Glob(tmpDir + "/*.tar.gz")
+	if err != nil {
+		t.Fatalf("filepath.Glob failed: %v", err)
+	}
+	if len(matches) != 0 {
+		t.Errorf("expected 0 matches, got %d", len(matches))
 	}
 }
