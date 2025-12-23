@@ -130,6 +130,8 @@ jobs:
               - name: github
                 enabled: true
                 config:
+                  owner: relicta-tech
+                  repo: plugin-github
                   draft: false
                   prerelease: false
                   generate_release_notes: true
